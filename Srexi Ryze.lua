@@ -7,10 +7,12 @@ if myHero.charName ~= "Ryze" then return end
 --SurfaceS - covering the API in ODH
 --Ralphlol - VPrediction
 --Aroc - SxOrbWalk
+--Pain - Autoupdater
 
 --Script Name / Author
 --Srexi Ryze by Srexi--
 local ts
+local autoUpdate = true
 --General values
 local aaRange = 550
 myHero = GetMyHero()
@@ -26,35 +28,36 @@ local wRange = 600
 local eRange = 600
 
 --this scripts version
-local localVersion = "0.0.0.2"
+local localVersion = 0.02
 
 --make sure the user has vPrediction & SxOrbWalk
 require "VPrediction"
 require "SxOrbWalk"
 
-function General:Updater()
-	local ServerResult = GetWebResult("raw.github.com","/LegendBot/LegendSeries/master/BoL/Version/LegendSeries.version")
+AddLoadCallback(function()
+if autoUpdate == true then
+	local ServerResult = GetWebResult("raw.github.com","/srexi/Srexi-BoL/master/Srexi%20Ryze.version")
 	if ServerResult then
 		ServerVersion = tonumber(ServerResult)
-		if Version < ServerVersion then
-			Print("A new version is available: v"..ServerVersion..". Attempting to download now.")
-			DelayAction(function() DownloadFile("https://raw.githubusercontent.com/LegendBot/LegendSeries/master/BoL/LegendSeries.lua".."?rand"..math.random(1,9999), SCRIPT_PATH.."LegendSeries.lua", function() Print("Successfully downloaded the latest version: v"..ServerVersion..".") end) end, 2)
+		if localVersion < ServerVersion then
+			print("A new version is available: v"..ServerVersion..". Attempting to download now.")
+			DelayAction(function() DownloadFile("https://raw.githubusercontent.com/srexi/Srexi-BoL/master/Srexi%20Ryze.lua".."?rand"..math.random(1,9999), SCRIPT_PATH.."Srexi Ryze.lua", function() print("Successfully downloaded the latest version: v"..ServerVersion..".") end) end, 2)
 		else
-			Print("You are running the latest version: v"..Version..".")
+			print("You are running the latest version: v"..localVersion..".")
 		end
 	else
-		Print("Error finding server version.")
+		print("Error finding server version.")
 	end
+	else
+	PrinChat("Autoupdate disabled! Your version: " .. localVersion .. ".")
 end
+end)
 
 function OnLoad() --this gets called when BoL loads
 CreateMenu() --creating our menu
-
 LoadLibs() --load our librarys
-
 ts = TargetSelector(TARGET_LOW_HP_PRIORITY, 900)
-
-PrintChat("Srexi Ryze v 0.0.0.2 Loaded") --confirming to the user it works
+PrintChat("Srexi Ryze v" .. localVersion .. " Loaded") --confirming to the user it works
 end
 
 function OnDraw() --this gets called when we draw
